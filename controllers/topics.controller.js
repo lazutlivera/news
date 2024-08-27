@@ -3,6 +3,7 @@ const {
   fetchTopics,
   fetchEndpoints,
   fetchArticleById,
+  fetchArticles,
 } = require("../models/topics.model");
 
 exports.getTopics = async (req, res, next) => {
@@ -31,4 +32,8 @@ exports.getArticleById = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+exports.getArticles = async (req, res, next) => {
+  const articles = await fetchArticles();
+  res.status(200).send({ articles });
 };

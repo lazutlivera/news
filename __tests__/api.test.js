@@ -59,7 +59,7 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/3")
       .expect(200)
       .then(({ body }) => {
-        expect(typeof body.article).toBe("object");
+        expect(body.article.article_id).toBe(3);
         expect(body.article).toHaveProperty("article_id", expect.any(Number));
         expect(body.article).toHaveProperty("title", expect.any(String));
         expect(body.article).toHaveProperty("topic", expect.any(String));
@@ -78,7 +78,7 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/banana")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid info");
+        expect(body.msg).toBe("Bad Request");
       });
   });
   it("status 404, responds with a message if id doesn't exist", () => {
@@ -86,7 +86,35 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/8500")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Id 8500 Not Found");
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+describe("GET/api/articles", () => {
+  it("status 200, responds with array of all articles available", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(13);
+        body.articles.forEach((item) => {
+          expect(item).toHaveProperty("article_id", expect.any(Number));
+          expect(item).toHaveProperty("title", expect.any(String));
+          expect(item).toHaveProperty("topic", expect.any(String));
+          expect(item).toHaveProperty("author", expect.any(String));
+          expect(item).toHaveProperty("created_at", expect.any(String));
+          expect(item).toHaveProperty("votes", expect.any(Number));
+          expect(item).toHaveProperty("article_img_url", expect.any(String));
+          expect(item).toHaveProperty("comment_count", expect.any(Number));
+        });
+      });
+  });
+  it("status 200, articles Sorted by Date", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });

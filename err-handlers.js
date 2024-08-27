@@ -13,7 +13,6 @@ exports.endPointNotFound = (req, res, next) => {
 
 exports.customErrorHandler = (err, req, res, next) => {
   if (err.status && err.msg) {
-    console.log('here')
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);

@@ -12,3 +12,15 @@ exports.fetchEndpoints = async () => {
   const parsedResult = JSON.parse(result);
   return parsedResult;
 };
+
+exports.fetchArticleById = async (article_id) => {
+  let queryStr = `SELECT * FROM articles WHERE article_id = $1`;
+  let queryVal = [article_id];
+  const result = await db.query(queryStr, queryVal);
+
+  if (result.rows.length === 0) {
+    return Promise.reject({ status: 404, msg: `Id ${article_id} Not Found`});
+  } else {
+    return result.rows[0];
+  }
+};

@@ -3,6 +3,7 @@ const app = express();
 const {
   getTopics,
   getEndpoints,
+  getArticleById
 } = require("./controllers/topics.controller.js");
 const {
   endPointNotFound,
@@ -13,6 +14,7 @@ const {
 
 app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
+app.get('/api/articles/:article_id', getArticleById)
 app.get("/api/*", endPointNotFound);
 
 app.use(handlePsqlErrors);

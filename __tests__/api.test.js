@@ -97,6 +97,7 @@ describe("GET/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(13);
+
         body.articles.forEach((item) => {
           expect(item).toHaveProperty("article_id", expect.any(Number));
           expect(item).toHaveProperty("title", expect.any(String));
@@ -172,7 +173,6 @@ describe("GET/api/articles/:article_id/comments", () => {
 });
 describe("POST/api/articles/:article_id/comments", () => {
   it("status 201, adds a comment to the given article", async () => {
-
     return request(app)
       .post("/api/articles/3/comments")
       .send({
@@ -199,6 +199,67 @@ describe("POST/api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("username and comment required");
+      });
+  });
+});
+describe("PATCH/api/articles/:article_id", () => {
+  it("status 200: updates the vote count of an article", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 3,
+            votes: 1,
+          })
+        );
+      });
+  });
+
+  it("status 200: decrements the vote count of an article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -100 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            votes: 0,
+          })
+        );
+      });
+  });
+
+  it("status 400: responds with a message when inc_votes is not a number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "nan" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid data type");
+      });
+  });
+
+  it("status 404: responds with a message when article_id doesn't exist", () => {
+    return request(app)
+      .patch("/api/articles/9999")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("status 400: responds with an error message if inc_votes is missing", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid data type");
       });
   });
 });

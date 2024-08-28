@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
-const { checkArticleExist } = require("../utils/utils");
+const { checkExist } = require("../utils/utils");
 const comments = require("../db/data/test-data/comments");
 
 exports.fetchTopics = async () => {
@@ -40,7 +40,7 @@ exports.fetchComments = async (article_id) => {
   if (article_id) {
     queryStr += " WHERE article_id = $1 ORDER BY comments.created_at DESC";
     queryVals.push(article_id);
-    queryProms.push(checkArticleExist("articles", "article_id", article_id));
+    queryProms.push(checkExist("articles", "article_id", article_id));
   }
   queryProms.push(db.query(queryStr, queryVals));
   const allPromises = await Promise.all(queryProms);
@@ -65,7 +65,7 @@ exports.addComment = async (article_id, username, body) => {
       });
     } else {
       queryVals.push(article_id, username, body);
-      queryProms.push(checkArticleExist("articles", "article_id", article_id));
+      queryProms.push(checkExist("articles", "article_id", article_id));
     }
   }
   queryProms.push(db.query(queryStr, queryVals));
@@ -76,4 +76,19 @@ exports.addComment = async (article_id, username, body) => {
   } else {
     return allPromises[1].rows[0];
   }
+};
+exports.updateArticleVotes = async (article_id, inc_votes) => {
+  await checkExist('articles', 'article_id', article_id); 
+
+  const queryStr = `
+      UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2
+      RETURNING *;
+  `;
+  const queryValues = [inc_votes, article_id];
+
+  const result = await db.query(queryStr, queryValues);
+
+  return result.rows[0];
 };

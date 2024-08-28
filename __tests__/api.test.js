@@ -118,3 +118,55 @@ describe("GET/api/articles", () => {
       });
   });
 });
+describe("GET/api/articles/:article_id/comments", () => {
+  it("status 200, responds with comments of the article given by id", () => {
+    return request(app)
+      .get("/api/articles/3/comment")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(2);
+        body.comments.forEach(() => {
+          expect.objectContaining({
+            article_id: 3,
+            body: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(String),
+            comment_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  it("status 200, responds with an empty array if the article doesn't have any comments", () => {
+    return request(app)
+      .get("/api/articles/2/comment")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  it("status 200, comments Sorted by Date", () => {
+    return request(app)
+      .get("/api/articles/1/comment")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  it("status 400, responds with a message when the id datatype is not valid", () => {
+    return request(app)
+      .get("/api/articles/banana/comment")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("status 404, responds with a message if id doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/8500/comment")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});

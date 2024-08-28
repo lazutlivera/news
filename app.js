@@ -4,7 +4,8 @@ const {
   getTopics,
   getEndpoints,
   getArticleById,
-  getArticles
+  getArticles,
+  getCommentsByArticleId
 } = require("./controllers/topics.controller.js");
 const {
   endPointNotFound,
@@ -17,6 +18,7 @@ app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
 app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles', getArticles)
+app.get('/api/articles/:article_id/comment', getCommentsByArticleId)
 app.get("/api/*", endPointNotFound);
 
 app.use(handlePsqlErrors);

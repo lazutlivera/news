@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
+const { checkArticleExist } = require("../utils/utils");
 
 exports.fetchTopics = async () => {
   let queryStr = `SELECT * FROM topics`;
@@ -25,7 +26,26 @@ exports.fetchArticleById = async (article_id) => {
   }
 };
 exports.fetchArticles = async () => {
- const queryStr = "SELECT articles.article_id, articles.title,articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url ORDER BY articles.created_at DESC ";
+  const queryStr =
+    "SELECT articles.article_id, articles.title,articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url ORDER BY articles.created_at DESC ";
   const result = await db.query(queryStr);
   return result.rows;
+};
+exports.fetchComments = async (article_id) => {
+  let queryStr = "SELECT * FROM comments";
+  let queryVals = [];
+  let queryProms = [];
+
+  if (article_id) {
+    queryStr += " WHERE article_id = $1 ORDER BY comments.created_at DESC";
+    queryVals.push(article_id);
+    queryProms.push(checkArticleExist("articles", "article_id", article_id));
+  }
+  queryProms.push(db.query(queryStr, queryVals));
+  const allPromises = await Promise.all(queryProms);
+  if (queryProms.length === 1) {
+    return allPromises[0].rows;
+  } else {
+    return allPromises[1].rows;
+  }
 };

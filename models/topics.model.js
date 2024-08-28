@@ -1,6 +1,7 @@
 const db = require("../db/connection");
 const fs = require("fs/promises");
 const { checkArticleExist } = require("../utils/utils");
+const comments = require("../db/data/test-data/comments");
 
 exports.fetchTopics = async () => {
   let queryStr = `SELECT * FROM topics`;
@@ -47,5 +48,32 @@ exports.fetchComments = async (article_id) => {
     return allPromises[0].rows;
   } else {
     return allPromises[1].rows;
+  }
+};
+
+exports.addComment = async (article_id, username, body) => {
+  const queryStr = `INSERT INTO comments (article_id, author, body, created_at) VALUES($1, $2, $3, NOW()) RETURNING comment_id, article_id, author, body, created_at`;
+
+  let queryVals = [];
+  let queryProms = [];
+
+  if (article_id) {
+    if (!username || !body) {
+      return Promise.reject({
+        status: 400,
+        msg: "username and comment required",
+      });
+    } else {
+      queryVals.push(article_id, username, body);
+      queryProms.push(checkArticleExist("articles", "article_id", article_id));
+    }
+  }
+  queryProms.push(db.query(queryStr, queryVals));
+
+  const allPromises = await Promise.all(queryProms);
+  if (queryProms.length === 1) {
+    return allPromises[0].rows;
+  } else {
+    return allPromises[1].rows[0];
   }
 };

@@ -4,7 +4,8 @@ const {
   fetchEndpoints,
   fetchArticleById,
   fetchArticles,
-  fetchComments
+  fetchComments,
+  addComment
 } = require("../models/topics.model");
 
 exports.getTopics = async (req, res, next) => {
@@ -48,3 +49,15 @@ exports.getCommentsByArticleId = async (req, res, next) => {
     next(err)
   }
 };
+exports.postComment = async (req, res, next) =>{
+  const { article_id } = req.params;
+  const {username, body} = req.body
+
+
+  try{
+    const comment = await addComment(article_id, username, body)
+    res.status(201).send({comment})
+  }catch(err){
+    next(err)
+  }
+}

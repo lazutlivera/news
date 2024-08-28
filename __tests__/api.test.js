@@ -121,7 +121,7 @@ describe("GET/api/articles", () => {
 describe("GET/api/articles/:article_id/comments", () => {
   it("status 200, responds with comments of the article given by id", () => {
     return request(app)
-      .get("/api/articles/3/comment")
+      .get("/api/articles/3/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toHaveLength(2);
@@ -139,7 +139,7 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
   it("status 200, responds with an empty array if the article doesn't have any comments", () => {
     return request(app)
-      .get("/api/articles/2/comment")
+      .get("/api/articles/2/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toEqual([]);
@@ -147,7 +147,7 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
   it("status 200, comments Sorted by Date", () => {
     return request(app)
-      .get("/api/articles/1/comment")
+      .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toBeSortedBy("created_at", { descending: true });
@@ -155,7 +155,7 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
   it("status 400, responds with a message when the id datatype is not valid", () => {
     return request(app)
-      .get("/api/articles/banana/comment")
+      .get("/api/articles/banana/comments")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
@@ -163,10 +163,42 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
   it("status 404, responds with a message if id doesn't exist", () => {
     return request(app)
-      .get("/api/articles/8500/comment")
+      .get("/api/articles/8500/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+describe("POST/api/articles/:article_id/comments", () => {
+  it("status 201, adds a comment to the given article", async () => {
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        username: "lurker",
+        body: "Test, one, two, three, check",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            article_id: 3,
+            body: "Test, one, two, three, check",
+            author: "lurker",
+            created_at: expect.any(String),
+            comment_id: expect.any(Number),
+          })
+        );
+      });
+  });
+  it("status 400, retruns an error message if body or username doesn't exist", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ body: "Test, one, two, three, check" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("username and comment required");
       });
   });
 });

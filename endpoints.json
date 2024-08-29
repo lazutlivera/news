@@ -11,7 +11,16 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": [
+      {
+        "name": "sort_by",
+        "description": "Sorts the articles (default created_at). Valid properties: created_at, title, votes, author"
+      },
+      {
+        "name": "order",
+        "description": "Sets the sort order, either asc or desc(defaults to descending)"
+      }
+    ],
     "exampleResponse": {
       "articles": [
         {

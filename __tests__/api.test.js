@@ -119,6 +119,56 @@ describe("GET/api/articles", () => {
       });
   });
 });
+describe('GET/api/articles(sort queries)',()=>{
+  it('status 200, responds with articles sorted by given property and ordered descending when order is not given', ()=>{
+    return request(app)
+    .get('/api/articles?sort_by=title')
+    .expect(200)
+    .then(({body})=>{
+      expect(body.articles).toBeSortedBy('title', {descending: true })
+    })
+  })
+  it("status 400: returns an error message when given wrong property", () => {
+    return request(app)
+      .get("/api/articles?sort_by=banana")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Invalid Sort");
+      });
+  });
+  it("status 400: returns an error message when no property is given", () => {
+    return request(app)
+      .get("/api/articles?sort_by=")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Invalid Sort");
+      });
+  });
+  it("status 200: responds with articles sorted by given property in given order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("title", { ascending: true });
+      });
+  });
+  it("status 400: returns an error message when given order is invalid", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=acc")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid Order Command");
+      });
+  });
+  it("status 400: returns an error message when given order is empty", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid Order Command");
+      });
+  });
+})
 describe("GET/api/articles/:article_id/comments", () => {
   it("status 200, responds with comments of the article given by id", () => {
     return request(app)

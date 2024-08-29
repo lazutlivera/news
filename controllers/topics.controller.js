@@ -5,7 +5,8 @@ const {
   fetchArticleById,
   fetchArticles,
   fetchComments,
-  addComment
+  addComment,
+  updateArticleVotes
 } = require("../models/topics.model");
 
 exports.getTopics = async (req, res, next) => {
@@ -61,3 +62,18 @@ exports.postComment = async (req, res, next) =>{
     next(err)
   }
 }
+exports.patchArticle = async (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  try {
+      if (typeof inc_votes !== 'number') {
+          throw { status: 400, msg: 'Invalid data type' };
+      }
+
+      const article = await updateArticleVotes(article_id, inc_votes);
+      res.status(200).send({ article });
+  } catch (err) {
+      next(err);
+  }
+};

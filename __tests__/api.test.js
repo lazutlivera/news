@@ -263,3 +263,32 @@ describe("PATCH/api/articles/:article_id", () => {
       });
   });
 });
+describe("DELETE/api/comments/:comment_id", () => {
+  it("status 204: deletes a comment by comment_id", async () => {
+    const response = await request(app).get("/api/articles");
+    const commentCount = response.body.articles[7].comment_count;
+    await request(app).delete("/api/comments/1").expect(204);
+
+    const checkRes = await request(app).get("/api/articles/9/comments");
+    const commenCountAfterDel = checkRes.body.comments.length;
+    expect(commentCount - 1).toBe(commenCountAfterDel);
+  });
+
+  it("status 404: responds with a message when comment_id doesn't exist", () => {
+    return request(app)
+      .delete("/api/comments/5000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("status 400: responds with a message if invalid comment_id is given", () => {
+    return request(app)
+      .delete("/api/comments/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});

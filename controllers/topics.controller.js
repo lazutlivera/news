@@ -39,8 +39,14 @@ exports.getArticleById = async (req, res, next) => {
   }
 };
 exports.getArticles = async (req, res, next) => {
-  const articles = await fetchArticles();
-  res.status(200).send({ articles });
+  const { sort_by, order } = req.query;
+
+  try {
+    const articles = await fetchArticles(sort_by, order);
+    res.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getCommentsByArticleId = async (req, res, next) => {

@@ -26,9 +26,31 @@ exports.fetchArticleById = async (article_id) => {
     return result.rows[0];
   }
 };
-exports.fetchArticles = async () => {
-  const queryStr =
-    "SELECT articles.article_id, articles.title,articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url ORDER BY articles.created_at DESC ";
+exports.fetchArticles = async (sort_by, order) => {
+  let queryStr =
+    "SELECT articles.article_id, articles.title,articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url";
+  const validSorts = ["title", "topic", "author", "vote", "comment_count"];
+  const validOrders = ["desc", "asc"];
+
+  if (sort_by || sort_by === "") {
+    if (!validSorts.includes(sort_by)) {
+      return Promise.reject({ status: 400, msg: "Invalid Sort" });
+    } else {
+      queryStr += ` ORDER BY ${sort_by}`;
+      if (order || order === "") {
+        if (!validOrders.includes(order)) {
+          return Promise.reject({ status: 400, msg: "Invalid Order Command" });
+        } else {
+          queryStr += ` ${order}`;
+        }
+      } else {
+        queryStr += ` DESC`;
+      }
+    }
+  } else {
+    queryStr += ` ORDER BY articles.created_at DESC`;
+  }
+
   const result = await db.query(queryStr);
   return result.rows;
 };

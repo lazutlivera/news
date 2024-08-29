@@ -19,6 +19,10 @@
       {
         "name": "order",
         "description": "Sets the sort order, either asc or desc(defaults to descending)"
+      },
+      {
+         "name": "topic",
+        "description": "Gets the topic in articles. Valid properties: football, coding, cooking"
       }
     ],
     "exampleResponse": {

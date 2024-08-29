@@ -169,6 +169,34 @@ describe('GET/api/articles(sort queries)',()=>{
       });
   });
 })
+describe('GET/api/articles(topic query)',()=>{
+  it("status 200: responds with articles of given topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((item) => {
+          expect(item.topic).toBe("cats");
+        });
+      });
+  });
+  it("status 400: returns an error message when an invalid value is given", () => {
+    return request(app)
+      .get("/api/articles?topic=apple")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Invalid Topic");
+      });
+  });
+  it("status 400: returns an error message when given value is empty", () => {
+    return request(app)
+      .get("/api/articles?topic=")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Invalid Topic");
+      });
+  });
+})
 describe("GET/api/articles/:article_id/comments", () => {
   it("status 200, responds with comments of the article given by id", () => {
     return request(app)

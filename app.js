@@ -7,7 +7,8 @@ const {
   getArticles,
   getCommentsByArticleId,
   postComment,
-  patchArticle
+  patchArticle,
+  deleteComment
 } = require("./controllers/topics.controller.js");
 const {
   endPointNotFound,
@@ -24,6 +25,7 @@ app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 app.post('/api/articles/:article_id/comments', postComment)
 app.patch('/api/articles/:article_id', patchArticle);
+app.delete('/api/comments/:comment_id',deleteComment)
 app.get("/api/*", endPointNotFound);
 
 app.use(handlePsqlErrors);

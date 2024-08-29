@@ -78,7 +78,7 @@ exports.addComment = async (article_id, username, body) => {
   }
 };
 exports.updateArticleVotes = async (article_id, inc_votes) => {
-  await checkExist('articles', 'article_id', article_id); 
+  await checkExist("articles", "article_id", article_id);
 
   const queryStr = `
       UPDATE articles
@@ -87,6 +87,20 @@ exports.updateArticleVotes = async (article_id, inc_votes) => {
       RETURNING *;
   `;
   const queryValues = [inc_votes, article_id];
+
+  const result = await db.query(queryStr, queryValues);
+
+  return result.rows[0];
+};
+exports.deleteCommentById = async (comment_id) => {
+  await checkExist("comments", "comment_id", comment_id);
+
+  const queryStr = `
+      DELETE FROM comments
+      WHERE comment_id = $1
+      RETURNING *;
+  `;
+  const queryValues = [comment_id];
 
   const result = await db.query(queryStr, queryValues);
 

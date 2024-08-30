@@ -30,9 +30,6 @@ jobs:
         postgresql db: 'my_db'
         postgresql user: 'test_user'
         postgresql password: 'test_password'
-      
-        run: |
-          npm setup-dbs
 
     - name: Seed Database
       run: | 

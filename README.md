@@ -4,7 +4,7 @@ You can access this project at: [Hosted Link](https://nc-news-dgn.onrender.com/a
 
 ## Project Summary
 
-This API allows users to create, modify, update and delete articles, topics, users, and comments and supprts sorting and filtering to manage news content.
+This API allows users to create, modify, update and delete articles, topics, users, and comments and supports sorting and filtering to manage news content.
 
 ## Requierments
 
@@ -25,7 +25,7 @@ Make sure you have the following installed:
 
 3. **Setup Environment Variables:**
 
-   Please create two .env files in the root directory: one named .env.test with `**PGDATABASE=nc_news_test**`, and another named .env.development with `**PGDATABASE=nc_news**`.
+   Please create two .env files in the root directory: one named .env.test and another named .env.development. You can refer to .env.example file for further actions.
 
 4. **Set up and seed the database:**
 

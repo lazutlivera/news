@@ -22,7 +22,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        npm i
+        npm ci
   
     - name: Setup Databse
       uses: harmon758/postgresql-action@v1
@@ -36,7 +36,7 @@ jobs:
         export PGDATABASE=my_db
         export PGUSER=test_user
         export PGPASSWORD=test_password
-        npm run seed
+        npm run seed &&
 
     - name: Run Tests
       run: |

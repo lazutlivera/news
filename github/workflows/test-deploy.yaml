@@ -2,7 +2,7 @@ name: test-deploy
 
 on:
   push:
-    branches:  main 
+    branches:  add-workflow 
   pull_request:
     branches: main
 

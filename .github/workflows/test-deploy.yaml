@@ -30,16 +30,12 @@ jobs:
         postgresql db: 'my_db'
         postgresql user: 'test_user'
         postgresql password: 'test_password'
-
-    - name: Seed Database
-      run: | 
+        
+    - name: Run Tests
+      run: |
         export PGDATABASE=my_db
         export PGUSER=test_user
         export PGPASSWORD=test_password
-        npm run seed &&
-
-    - name: Run Tests
-      run: |
         npm run test
   
   #deploy:

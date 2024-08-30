@@ -2,7 +2,7 @@ name: test-deploy
 
 on:
   push:
-    branches:  add-workflow 
+    branches: main 
   pull_request:
     branches: main
 
@@ -21,8 +21,8 @@ jobs:
         cache: 'npm'
 
     - name: Install Dependencies
-    - run: |
-        npm i
+      run: |
+        npm ci
   
     - name: Setup Databse
       uses: harmon758/postgresql-action@v1
@@ -30,16 +30,12 @@ jobs:
         postgresql db: 'my_db'
         postgresql user: 'test_user'
         postgresql password: 'test_password'
-      run: |
-        npm setup-dbs
-
-    - name: Seed Database
-      run: | 
-        PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password
-        npm seed
-
+        
     - name: Run Tests
       run: |
-        npm test
+        export PGDATABASE=my_db
+        export PGUSER=test_user
+        export PGPASSWORD=test_password
+        npm run test
   
   #deploy:

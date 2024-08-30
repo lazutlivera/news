@@ -16,7 +16,7 @@ exports.fetchEndpoints = async () => {
 };
 
 exports.fetchArticleById = async (article_id) => {
-  const queryStr = `SELECT * FROM articles WHERE article_id = $1`;
+  const queryStr = `SELECT articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, articles.body ,CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, articles.body`;
   const queryVal = [article_id];
   const result = await db.query(queryStr, queryVal);
 

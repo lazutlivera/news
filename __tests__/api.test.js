@@ -73,6 +73,15 @@ describe("GET/api/articles/:article_id", () => {
         );
       });
   });
+  it("status: 200, responds with the article with comment count in the response", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.article_id).toBe(1);
+        expect(body.article).toHaveProperty("comment_count", 11);
+      });
+  });
   it("status 400, responds with a message when the id datatype is not valid", () => {
     return request(app)
       .get("/api/articles/banana")
@@ -119,20 +128,20 @@ describe("GET/api/articles", () => {
       });
   });
 });
-describe('GET/api/articles(sort queries)',()=>{
-  it('status 200, responds with articles sorted by given property and ordered descending when order is not given', ()=>{
+describe("GET/api/articles(sort queries)", () => {
+  it("status 200, responds with articles sorted by given property and ordered descending when order is not given", () => {
     return request(app)
-    .get('/api/articles?sort_by=title')
-    .expect(200)
-    .then(({body})=>{
-      expect(body.articles).toBeSortedBy('title', {descending: true })
-    })
-  })
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("title", { descending: true });
+      });
+  });
   it("status 400: returns an error message when given wrong property", () => {
     return request(app)
       .get("/api/articles?sort_by=banana")
       .expect(400)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.msg).toBe("Invalid Sort");
       });
   });
@@ -140,7 +149,7 @@ describe('GET/api/articles(sort queries)',()=>{
     return request(app)
       .get("/api/articles?sort_by=")
       .expect(400)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.msg).toBe("Invalid Sort");
       });
   });
@@ -168,8 +177,8 @@ describe('GET/api/articles(sort queries)',()=>{
         expect(response.body.msg).toBe("Invalid Order Command");
       });
   });
-})
-describe('GET/api/articles(topic query)',()=>{
+});
+describe("GET/api/articles(topic query)", () => {
   it("status 200: responds with articles of given topic", () => {
     return request(app)
       .get("/api/articles?topic=cats")
@@ -184,7 +193,7 @@ describe('GET/api/articles(topic query)',()=>{
     return request(app)
       .get("/api/articles?topic=apple")
       .expect(400)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.msg).toBe("Invalid Topic");
       });
   });
@@ -192,11 +201,11 @@ describe('GET/api/articles(topic query)',()=>{
     return request(app)
       .get("/api/articles?topic=")
       .expect(400)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.msg).toBe("Invalid Topic");
       });
   });
-})
+});
 describe("GET/api/articles/:article_id/comments", () => {
   it("status 200, responds with comments of the article given by id", () => {
     return request(app)

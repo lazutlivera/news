@@ -33,7 +33,9 @@ jobs:
 
     - name: Seed Database
       run: | 
-        PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password
+        export PGDATABASE=my_db
+        export PGUSER=test_user
+        export PGPASSWORD=test_password
         npm run seed
 
     - name: Run Tests

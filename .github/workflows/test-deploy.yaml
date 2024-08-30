@@ -34,10 +34,10 @@ jobs:
     - name: Seed Database
       run: | 
         PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password
-        npm seed
+        npm run seed
 
     - name: Run Tests
       run: |
-        npm test
+        npm run test
   
   #deploy:

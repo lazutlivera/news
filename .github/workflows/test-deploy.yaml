@@ -21,7 +21,7 @@ jobs:
         cache: 'npm'
 
     - name: Install Dependencies
-    - run: |
+      run: |
         npm i
   
     - name: Setup Databse
@@ -30,8 +30,9 @@ jobs:
         postgresql db: 'my_db'
         postgresql user: 'test_user'
         postgresql password: 'test_password'
-      run: |
-        npm setup-dbs
+      
+        run: |
+          npm setup-dbs
 
     - name: Seed Database
       run: | 

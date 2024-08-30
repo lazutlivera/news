@@ -9,7 +9,7 @@ const {
   updateArticleVotes,
   deleteCommentById,
   fetchUsers,
-} = require("../models/topics.model");
+} = require("../models/model");
 
 exports.getTopics = async (req, res, next) => {
   try {

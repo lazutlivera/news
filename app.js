@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const apiRouter = require("./routes/api-router");
 const {
   getTopics,
   getEndpoints,
@@ -10,7 +11,7 @@ const {
   patchArticle,
   deleteComment,
   getUsers,
-} = require("./controllers/topics.controller.js");
+} = require("./controllers/controller.js");
 const {
   endPointNotFound,
   serverErrorHandler,
@@ -18,16 +19,9 @@ const {
   customErrorHandler,
 } = require("./err-handlers");
 
+
 app.use(express.json());
-app.get("/api", getEndpoints);
-app.get("/api/topics", getTopics);
-app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles", getArticles);
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
-app.post("/api/articles/:article_id/comments", postComment);
-app.patch("/api/articles/:article_id", patchArticle);
-app.delete("/api/comments/:comment_id", deleteComment);
-app.get("/api/users", getUsers);
+app.use("/api", apiRouter);
 
 app.get("/api/*", endPointNotFound);
 

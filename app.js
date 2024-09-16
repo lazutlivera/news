@@ -27,7 +27,7 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 app.get("/", (res, req) =>{
-  res.send({msg: "/api for endpoints"})
+  res.json({msg: "/api for endpoints"})
 })
 app.get("/api/*", endPointNotFound);
 

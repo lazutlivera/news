@@ -30,7 +30,7 @@ exports.fetchArticles = async (sort_by, order, topic) => {
   let queryStr =
     "SELECT articles.article_id, articles.title,articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.body) AS INTEGER) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id";
   const groupStr = ` GROUP BY articles.article_id,articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url`
-  const validSorts = ["title", "topic", "author", "vote", "comment_count"];
+  const validSorts = ["title", "topic", "author", "votes", "comment_count", "created_at"];
   const validOrders = ["desc", "asc"];
   const validTopics =["coding", "football", "cooking", "cats"]
 
